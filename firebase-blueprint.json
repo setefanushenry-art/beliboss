@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile and settings information",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "User unique identifier matching auth UID",
+          "maxLength": 128
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address",
+          "maxLength": 256
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User display name or pharmacy name",
+          "maxLength": 256
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of user creation",
+          "maxLength": 64
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update",
+          "maxLength": 64
+        }
+      },
+      "required": ["userId", "email"]
+    },
+    "AppStateDoc": {
+      "title": "AppStateDoc",
+      "description": "Cloud synchronized pharmacy application state containing master data, transactions, and history",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Owner user ID",
+          "maxLength": 128
+        },
+        "namaApotek": {
+          "type": "string",
+          "description": "Name of the pharmacy",
+          "maxLength": 256
+        },
+        "payloadJson": {
+          "type": "string",
+          "description": "Serialized JSON string of the complete pharmacy database state",
+          "maxLength": 900000
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last synchronization",
+          "maxLength": 64
+        }
+      },
+      "required": ["userId", "payloadJson"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Stores individual user account profile"
+    },
+    "/users/{userId}/cloudState/{stateId}": {
+      "schema": "AppStateDoc",
+      "description": "Stores user synchronized database state and pharmacy records"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="50%" stop-color="#4338ca" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+  
+  <!-- Background with Android Adaptive Mask Safe Radius -->
+  <rect width="512" height="512" rx="128" fill="url(#grad1)" />
+  <rect width="512" height="512" rx="128" fill="url(#glow)" />
+  
+  <!-- Main Medical Pharmacy Cross & Pill Emblem with Shadow -->
+  <g filter="url(#shadow)">
+    <!-- Cross Background -->
+    <rect x="216" y="116" width="80" height="280" rx="24" fill="#ffffff" />
+    <rect x="116" y="216" width="280" height="80" rx="24" fill="#ffffff" />
+    
+    <!-- Heartbeat / Pulse Electrocardiogram Accent -->
+    <path d="M140 256 L190 256 L215 200 L245 310 L275 220 L300 270 L320 256 L372 256" 
+          fill="none" 
+          stroke="#4f46e5" 
+          stroke-width="14" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+          
+    <!-- Sparkle / Star of Care at Top Right -->
+    <circle cx="360" cy="150" r="18" fill="#10b981" />
+  </g>
+</svg>

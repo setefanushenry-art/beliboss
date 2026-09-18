@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Prevent benign development Vite HMR connection logs and WebSocket errors in AI Studio iframe
+      (function() {
+        if (typeof window === 'undefined') return;
+
+        // Mock WebSocket specifically for Vite development HMR in sandboxed containers
+        // where HMR port is deliberately disabled by the platform.
+        try {
+          const NativeWebSocket = window.WebSocket;
+          if (NativeWebSocket) {
+            window.WebSocket = function(url, protocols) {
+              const urlStr = String(url || '');
+              const isViteHmr =
+                protocols === 'vite-hmr' ||
+                (Array.isArray(protocols) && protocols.includes('vite-hmr')) ||
+                urlStr.includes('vite-hmr') ||
+                urlStr.includes('token=') ||
+                urlStr.includes(':24678');
+
+              if (isViteHmr) {
+                const target = new EventTarget();
+                const mockWs = {
+                  readyState: 1, // OPEN
+                  OPEN: 1,
+                  CONNECTING: 0,
+                  CLOSING: 2,
+                  CLOSED: 3,
+                  url: urlStr,
+                  protocol: 'vite-hmr',
+                  binaryType: 'blob',
+                  bufferedAmount: 0,
+                  extensions: '',
+                  onopen: null,
+                  onmessage: null,
+                  onerror: null,
+                  onclose: null,
+                  send: function() {},
+                  close: function() {
+                    mockWs.readyState = 3;
+                  },
+                  addEventListener: function(type, listener, options) {
+                    target.addEventListener(type, listener, options);
+                  },
+                  removeEventListener: function(type, listener, options) {
+                    target.removeEventListener(type, listener, options);
+                  },
+                  dispatchEvent: function(event) {
+                    return target.dispatchEvent(event);
+                  },
+                };
+
+                Promise.resolve().then(function() {
+                  const openEvent = new Event('open');
+                  if (typeof mockWs.onopen === 'function') {
+                    try { mockWs.onopen(openEvent); } catch (_) {}
+                  }
+                  target.dispatchEvent(openEvent);
+                });
+
+                return mockWs;
+              }
+
+              return new NativeWebSocket(url, protocols);
+            };
+
+            window.WebSocket.prototype = NativeWebSocket.prototype;
+            window.WebSocket.CONNECTING = NativeWebSocket.CONNECTING;
+            window.WebSocket.OPEN = NativeWebSocket.OPEN;
+            window.WebSocket.CLOSING = NativeWebSocket.CLOSING;
+            window.WebSocket.CLOSED = NativeWebSocket.CLOSED;
+          }
+        } catch (_) {}
+
+        function isViteLog(arg) {
+          if (!arg) return false;
+          let text = '';
+          if (typeof arg === 'string') {
+            text = arg;
+          } else if (typeof arg === 'object') {
+            text = (arg.message || '') + ' ' + (arg.stack || '') + ' ' + (arg.reason || '') + ' ' + (arg.filename || '') + ' ' + (arg.name || '');
+          }
+          const lower = text.toLowerCase();
+          return (
+            lower.includes('[vite]') ||
+            lower.includes('vite-hmr') ||
+            lower.includes('failed to connect to websocket') ||
+            lower.includes('websocket closed') ||
+            lower.includes('24678')
+          );
+        }
+
+        const origLog = console.log;
+        console.log = function(...args) {
+          if (args.some(isViteLog)) return;
+          origLog.apply(console, args);
+        };
+        const origInfo = console.info;
+        console.info = function(...args) {
+          if (args.some(isViteLog)) return;
+          origInfo.apply(console, args);
+        };
+        const origErr = console.error;
+        console.error = function(...args) {
+          if (args.some(isViteLog)) return;
+          origErr.apply(console, args);
+        };
+        const origWarn = console.warn;
+        console.warn = function(...args) {
+          if (args.some(isViteLog)) return;
+          origWarn.apply(console, args);
+        };
+        const origDebug = console.debug;
+        console.debug = function(...args) {
+          if (args.some(isViteLog)) return;
+          origDebug.apply(console, args);
+        };
+
+        window.addEventListener('error', function(e) {
+          if (isViteLog(e.message) || isViteLog(e.error) || isViteLog(e.filename)) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+          }
+        }, true);
+
+        window.addEventListener('unhandledrejection', function(e) {
+          if (isViteLog(e.reason)) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+          }
+        }, true);
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Pembelian Obat & Manajemen Berkas Internal</title>
+    <meta name="description" content="Sistem perhitungan, komparasi harga PBF, usulan pengadaan obat, master SKU, sinkronisasi dua arah, pemindai kamera/berkas AI, serta manajemen berkas internal perangkat." />
+    <meta property="og:title" content="Pembelian Obat & Manajemen Berkas Internal" />
+    <meta property="og:description" content="Sistem perhitungan, komparasi harga PBF, usulan pengadaan obat, master SKU, sinkronisasi dua arah, pemindai kamera/berkas AI, serta manajemen berkas internal perangkat." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#0b0f19" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="FarmasiPro" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+  </head>
+  <body class="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-teal-500 selection:text-white">
+    <script>
+      // Clean up any stale service workers or caches to prevent blank preview screens in iframe
+      if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+          for (var i = 0; i < regs.length; i++) {
+            regs[i].unregister();
+          }
+        });
+      }
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
